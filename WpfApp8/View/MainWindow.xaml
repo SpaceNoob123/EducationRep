@@ -1,0 +1,54 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <!--<StackPanel DataContext="{Binding Users[0]}">
+            <TextBlock Text="{Binding Name}" ></TextBlock>
+        </StackPanel>-->
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <ListBox Grid.Row="0" ItemsSource="{Binding Users}" Background="Black" Foreground="White" SelectedItem="{Binding MySelectedUser}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border>
+                            <StackPanel >
+                                <TextBlock FontSize="32" Text="{Binding Path=Id}" ></TextBlock>
+                                <TextBlock Text="{Binding Path=Name}" ></TextBlock>
+                                <TextBlock Text="{Binding Path=Email}" ></TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Button Content="Add" Padding="15" Command="{Binding AddCommand}"></Button>
+                <Button Content="Del" Padding="15" Command="{Binding DelCommand}"></Button>
+            </StackPanel>
+        </Grid>
+
+
+
+        <StackPanel Grid.Column="1" Background="Black"  DataContext="{Binding MySelectedUser}">
+            <TextBox Foreground="Tomato" FontSize="32" Text="{Binding Path=Id, Mode=TwoWay}" Background="Black" ></TextBox>
+            <TextBox Foreground="Wheat" Text="{Binding Path=Name, Mode=TwoWay}" Background="Black" ></TextBox>
+            <TextBox Foreground="WhiteSmoke" Text="{Binding Path=Email, Mode=TwoWay}" Background="Black" ></TextBox>
+        </StackPanel>
+    </Grid>
+</Window>
