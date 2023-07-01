@@ -1,48 +1,31 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WpfApp8;
 
 namespace WpfApp1.Model
 {
-    public class User : INotifyPropertyChanged
+    public class User : ObservableEntity
 
     {
         private int id;
-        private string name;
-        private string email;
-
-        public string Email
-        {
-            get { return email; }
-            set { email = value; OnPropertyChanged("Email"); }
-        }
-
-
-        public string Name
-        {
-            get { return name; }
-            set { name = value; OnPropertyChanged("Name"); }
-        }
-
-
         public int Id
         {
             get { return id; }
-            set { id = value; OnPropertyChanged("Id"); }
+            set { id = value; OnPropertyChanged(); }
         }
 
-
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        private string name;
+        public string Name
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            get { return name; }
+            set { name = value; OnPropertyChanged(); }
         }
 
-        public override string ToString()
+        private string email;
+        public string Email
         {
-            return $"{Id}) {Name}\t{Email}";
+            get { return email; }
+            set { email = value; OnPropertyChanged(); }
         }
     }
 }

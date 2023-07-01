@@ -4,65 +4,99 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using WpfApp1.Model;
+using WpfApp8;
 
 namespace WpfApp1.ViewModel
 {
     internal class MainVM : INotifyPropertyChanged
     {
+        private MyDbContext dbContext;
+
         public ObservableCollection<User> Users { get; set; }
         private User selectedUser;
 
-        public User MySelectedUser 
+        public User MySelectedUser
         {
             get { return selectedUser; }
-            set { selectedUser = value; OnPropertyChanged("MySelectedUser"); }
+            set { selectedUser = value; OnPropertyChanged(); }
         }
 
-
         private RelayCommand addCommand;
+        private RelayCommand deleteCommand;
+        private RelayCommand updateCommand;
 
         public RelayCommand AddCommand
         {
-            get {
+            get
+            {
                 if (addCommand == null)
                     addCommand = new RelayCommand(AddTestUser);
 
-                return addCommand; 
+                return addCommand;
             }
         }
 
-        private RelayCommand delCommand;
-
-        public RelayCommand DelCommand
+        public RelayCommand DeleteCommand
         {
             get
             {
-                if (delCommand == null)
-                    delCommand = new RelayCommand(DeleteTestUser);
+                if (deleteCommand == null)
+                    deleteCommand = new RelayCommand(DeleteTestUser);
 
-                return delCommand;
+                return deleteCommand;
             }
         }
-        public MainVM()
+
+        public RelayCommand UpdateCommand
         {
-            Users = new ObservableCollection<User>()
+            get
             {
-                new User() {Id = 1, Email = "vasil@yandex.ru", Name = "Artem"},
-                new User() {Id = 2, Email = "bigbebrik@gmail.com", Name = "Kolya" }
-            };
-            MySelectedUser = Users[0];
+                if (updateCommand == null)
+                    updateCommand = new RelayCommand(UpdateTestUser);
+
+                return updateCommand;
+            }
         }
 
-        public void AddTestUser() => Users.Add(new User() { Id = Users.LastOrDefault().Id + 1, Email = "test@mail.mu", Name = "Test" });
-        public void DeleteTestUser() => Users.Remove(selectedUser);
+        public MainVM()
+        {
+            dbContext = new MyDbContext();
+            Users = new ObservableCollection<User>(dbContext.Users);
+            MySelectedUser = Users.Count > 0 ? Users[0] : null;
+        }
 
-        //public void ParamTest(object obj) => Users.Add(new User() { Id = Users.LastOrDefault().Id + 1, Email = "test@mail.mu", Name = "Test" });
+        public void AddTestUser()
+        {
+            User newUser = new User() { Id = Users.Count + 1, Email = "test@mail.mu", Name = "Test" };
+            dbContext.Users.Add(newUser);
+            dbContext.SaveChanges();
+            Users.Add(newUser);
+        }
+
+        public void DeleteTestUser()
+        {
+            dbContext.Users.Remove(selectedUser);
+            dbContext.SaveChanges();
+            Users.Remove(selectedUser);
+        }
+
+
+
+        public void UpdateTestUser()
+        {
+            dbContext.SaveChanges();
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null) 
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Dispose()
+        {
+            dbContext.Dispose();
         }
     }
 }
